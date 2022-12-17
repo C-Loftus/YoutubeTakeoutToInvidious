@@ -1,14 +1,19 @@
-## How To Use
+# How To Use
 
 - Get your data from Youtube using Google Takeout
-- Your playlists should be located in `YourTakeoutFolder/YouTube and YouTube Music/playlists`
--
+- Your playlists will be located in `YourTakeoutFolder/YouTube and YouTube Music/playlists`
+- Copy all these csv files for the playlist into the same folder as this script (or specify the folder with `--csv-dir`)
+- Get a base Invidious data json file
+  - Make sure you have an account for Invidious on an instance.
+  - From your Invidious instance export your data by going into `Settings Gear Icon->Data Preferences->Import/Export Data->Export Invidious Data as json`
+- Install the requirements (see below)
+- Run the script with `python main.py`
 
-## Install
+# Install
 
 You must have python installed.
 
-### System Wide Install
+## System Wide Install
 
 ```
 pip install -r requirements.txt
@@ -20,7 +25,7 @@ To run
 python main.py
 ```
 
-### pipenv install (for isolating installs)
+## pipenv install (for isolating package installs from your system Python env)
 
 ```
 pipenv install .
