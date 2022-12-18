@@ -52,7 +52,7 @@ Then run with `pipenv run python main.py`
 ╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ --subs          --no-subs                Append subscriptions from subscriptions.csv [default: no-subs]                            │
 │ --csv-dir                          TEXT  Directory where CSV files are read in from [default: .]                                   │
-│ --append-all    --no-append-all          Don't ask before appending. Add to existing playlist if the same name is in both the      │
+│ --append-all    --no-append-all          Automatically append to existing playlist without asking if the same name is in both the  │
 │                                          Invidious json and Youtube csv                                                            │
 │                                          [default: no-append-all]                                                                  │
 │ --out-dir                          TEXT  Directory where json output is written to [default: out]                                  │
