@@ -146,7 +146,7 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
             proceed = True if append_all else shouldAppend(name)
             if proceed:
                 print(f"[light_slate_blue]Appending playlist [/light_slate_blue]{name}")
-                data = appendPlaylist(data, playlistNum, videos, privacy)
+                data = appendPlaylist(data, playlistNum, videos)
             continue
         print(f"Adding playlist {name}")
         data = addPlaylist(data, name, videos, privacy)
@@ -180,8 +180,6 @@ def cli_runner(
     if privacy != "Private" and privacy != "Public":
         print("[red]Invalid privacy setting. Must be either Private or Public")
         exit(1)
-    # sanitize csv dir
-    csv_dir = os.path.abspath(csv_dir)
 
     main(csv_dir, subs, append_all, out_dir, invidious, split, privacy)
 
