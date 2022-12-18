@@ -5,11 +5,9 @@ import typer
 import os
 from typing import Optional
 from rich import print
-from rich.console import Console
-from rich.table import Table
 
-INVIDIOUS_JSON = "./subscription_manager.json"
-OUT_DIR = "./out"
+INVIDIOUS_JSON = "subscription_manager.json"
+OUT_DIR = "out"
 MAX_PLAYLIST_LENGTH = 490
 
 
@@ -21,15 +19,19 @@ def appendPlaylist(json, playlistNum: int, videos: list):
     return json
 
 
-def appendSubs():
-    pass
+def appendSubs(data, subs):
+    print("[deep_pink4]Appending subscriptions[/deep_pink4]")
+    for sub in subs:
+        if sub not in data["subscriptions"]:
+            data["subscriptions"].append(sub)
 
+    return data
 
-def addPlaylist(json, name: str, videos: list):
+def addPlaylist(json, name: str, videos: list, privacy: str):
     json["playlists"].append({
         "title": name,
         "description": "",
-        "privacy": "Private",
+        "privacy": privacy,
         "videos": videos
     })
 
@@ -74,11 +76,11 @@ def divideVideos(videos: list):
     return [list(reversed(r)) for r in res]
 
 
-def splitLongPlaylists(json):
+def splitLongPlaylists(json, privacy: str):
     for index, playlist in enumerate(json["playlists"]):
         if len(playlist["videos"]) > MAX_PLAYLIST_LENGTH:
             print(
-                f"Splitting playlist {playlist['title']} since it is above the maximum length of {MAX_PLAYLIST_LENGTH}")
+                f"\n[orange1]Splitting playlist [/orange1] {playlist['title']} since it is above the maximum length of {MAX_PLAYLIST_LENGTH}")
 
             videos = divideVideos(playlist["videos"])
 
@@ -87,7 +89,7 @@ def splitLongPlaylists(json):
                 json["playlists"].append({
                     "title": name,
                     "description": "",
-                    "privacy": "Private",
+                    "privacy": privacy,
                     "videos": smaller_playlist
                 })
             # remove the original playlist that was over the limit
@@ -98,7 +100,7 @@ def splitLongPlaylists(json):
 
 def getCSVs(csv_dir: str)-> list:
     os.chdir(csv_dir)
-    files = list(set(glob("*.csv")) - set(glob("subscriptions.csv")))
+    files = glob("*.csv")
 
     if len(files) == 0 or files == None:
         # expand path to absolute path
@@ -109,7 +111,7 @@ def getCSVs(csv_dir: str)-> list:
     return files        
 
 
-def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invidious: str, split: bool):
+def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invidious: str, split: bool, privacy: str):
 
     makeOutDirectory()
 
@@ -123,6 +125,13 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
 
     data = json.load(read_file)
     for f in files:
+
+        if f == "subscriptions.csv" and include_subs:
+            df = pandas.read_csv(f)["Channel Id"]
+            subs = df.values.tolist()
+            data = appendSubs(data, subs)
+            continue
+
         try:
             df = pandas.read_csv(f, skiprows=2)["Video Id"]
         except:
@@ -136,13 +145,13 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
         if playlistNum != -1:
             proceed = True if append_all else shouldAppend(name)
             if proceed:
-                print(f"[light_slate_blue]Appending playlist {name}")
-                data = appendPlaylist(data, playlistNum, videos)
+                print(f"[light_slate_blue]Appending playlist [/light_slate_blue]{name}")
+                data = appendPlaylist(data, playlistNum, videos, privacy)
             continue
         print(f"Adding playlist {name}")
-        data = addPlaylist(data, name, videos)
+        data = addPlaylist(data, name, videos, privacy)
 
-    data = splitLongPlaylists(data) if split else data
+    data = splitLongPlaylists(data, privacy) if split else data
 
     output = os.path.join(out_dir, "new_appended_data.json")
 
@@ -154,7 +163,7 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
 
 def cli_runner(
     subs: Optional[bool] = typer.Option(
-        False, help="Append Subscriptions"),
+        False, help="Append subscriptions from subscriptions.csv"),
     csv_dir: str = typer.Option(
         ".", help="Directory where CSV files are read in from"),
     append_all: Optional[bool] = typer.Option(
@@ -164,10 +173,17 @@ def cli_runner(
     invidious: Optional[str] = typer.Option(
         INVIDIOUS_JSON, help="Relative path to Invidious data file"),
     split: Optional[bool] = typer.Option(
-        True, help=f"Split playlists with len>{MAX_PLAYLIST_LENGTH} to accomodate for Invidious playlist size limit")
+        True, help=f"Split playlists with len>{MAX_PLAYLIST_LENGTH} to accomodate for Invidious playlist size limit"),
+    privacy: Optional[str] = typer.Option(
+        "Private", help="Privacy setting for playlists. Either Private or Public")
 ):
+    if privacy != "Private" and privacy != "Public":
+        print("[red]Invalid privacy setting. Must be either Private or Public")
+        exit(1)
+    # sanitize csv dir
+    csv_dir = os.path.abspath(csv_dir)
 
-    main(csv_dir, subs, append_all, out_dir, invidious, split)
+    main(csv_dir, subs, append_all, out_dir, invidious, split, privacy)
 
 
 if __name__ == "__main__":
