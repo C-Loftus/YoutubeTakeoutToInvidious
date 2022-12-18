@@ -42,8 +42,7 @@ Then run with `pipenv run python main.py`
 
 - Invidious limits playlist sizes. This script will split playlists with more than 490 videos into multiple playlists.
 - Invidious does not overwrite playlists when you import data. If you have existing playlists, you may need to delete duplicate playlists in your Invidious account after importing data.
-  - However, if you have the same playlist name in both the Invidious json and the Youtube csv, the script will ask you if you want to append the Youtube csv playlist to the Invidious json playlist. (This won't add a new playlist in the json file)
-- YouTube could change the format of their csv files.
+  - However, if you have the same playlist name in both the Invidious json and the Youtube csv, the script will ask you if you want to append the videos in the Youtube csv playlist to the existing Invidious playlist, without adding another new playlist.
 
 ## Help and Settings
 
