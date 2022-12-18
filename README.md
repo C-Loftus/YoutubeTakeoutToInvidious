@@ -5,9 +5,13 @@
 - Copy all these csv files for the playlist into the same folder as this script (or specify the folder with `--csv-dir`)
 - Get a base Invidious data json file
   - Make sure you have an account for Invidious on an instance.
-  - From your Invidious instance export your data by going into `Settings Gear Icon->Data Preferences->Import/Export Data->Export Invidious Data as json`
+  - From your Invidious instance, export your existing data (fine if you don't have any)
+    - Found at `Settings Gear Icon->Data Preferences->Import/Export Data->Export Invidious Data as json`
 - Install the requirements (see below)
 - Run the script with `python main.py`
+  - use `--help` to see how to change settings
+- Get the output json file from the `out` directory and import it into Invidious
+  - Done at `Settings Gear Icon->Data Preferences->Import/Export Data->Import Invidious JSON data`
 - If you found this to be useful please [star this repo](https://github.com/C-Loftus/YoutubeTakeoutToInvidious)
 
 # Install
@@ -33,7 +37,8 @@ Then run with `pipenv run python main.py`
 ## Limitations
 
 - Invidious limits playlist sizes. This script will split playlists with more than 490 videos into multiple playlists.
-- Invidious does not overwrite playlists when you import data. You may need to delete playlists in your Invidious instance after importing data.
+- Invidious does not overwrite playlists when you import data. If you have existing playlists, you may need to delete duplicate playlists in your Invidious account after importing data.
+  - However, if you have the same playlist name in both the Invidious json and the Youtube csv, the script will ask you if you want to append the Youtube csv playlist to the Invidious json playlist. (This won't add a new playlist in the json file)
 - YouTube could change the format of their csv files.
 
 ## Help and Settings

@@ -167,7 +167,7 @@ def cli_runner(
     csv_dir: str = typer.Option(
         ".", help="Directory where CSV files are read in from"),
     append_all: Optional[bool] = typer.Option(
-        False, help="Don't ask before appending. Add to existing playlist if the same name is in both the Invidious json and Youtube csv"),
+        False, help="Automatically append to existing playlist without asking if the same name is in both the Invidious json and Youtube csv"),
     out_dir: Optional[str] = typer.Option(
         OUT_DIR, help="Directory where json output is written to"),
     invidious: Optional[str] = typer.Option(
