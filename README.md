@@ -1,3 +1,7 @@
+# YoutubeTakeoutToInvidious
+
+Easily import your Youtube playlists and subscriptions into Invidious. Takes CSV files from Youtube Takeout and converts them to Invidious JSON data.
+
 # How To Use
 
 - Get your data from Youtube using Google Takeout
