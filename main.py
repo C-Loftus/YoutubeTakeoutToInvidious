@@ -118,12 +118,12 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
     files = getCSVs(csv_dir)
 
     try:
-        read_file = open(invidious, "r")
+        with open(invidious, "r") as read_file:
+            data = json.load(read_file)
     except FileNotFoundError:
         print(f"[red]Invidious json data titled `{invidious}` was not found")
         exit(1)
 
-    data = json.load(read_file)
     for f in files:
 
         if f == "subscriptions.csv" and include_subs:
@@ -133,10 +133,11 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
             continue
 
         try:
-            df = pandas.read_csv(f, skiprows=2)["Video Id"]
-        except:
+            df = pandas.read_csv(f, skiprows=0)["Video ID"]
+        except IndexError:
             print(
                 f"[red]Error reading in csv playlist titled `{f}`. Skipping it")
+            continue
 
         name = (f).split(".")[:-1]
         name = " ".join(name)
@@ -157,8 +158,8 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
 
     print(f"[green]Writing new invidious data to {output}")
 
-    json.dump(data, open(f"{output}", "w"), indent=4)
-    read_file.close()
+    with open(output, "w") as out_file:
+        json.dump(data, out_file, indent=4)
 
 
 def cli_runner(
