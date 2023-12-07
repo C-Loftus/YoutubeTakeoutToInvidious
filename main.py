@@ -136,6 +136,7 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
         except IndexError:
             print(
                 f"[red]Error reading in csv playlist titled `{f}`. Skipping it")
+            continue
 
         name = (f).split(".")[:-1]
         name = " ".join(name)
