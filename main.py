@@ -118,7 +118,8 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
     files = getCSVs(csv_dir)
 
     try:
-        read_file = open(invidious, "r")
+        with open(invidious, "r") as read_file:
+            data = json.load(read_file)
     except FileNotFoundError:
         print(f"[red]Invidious json data titled `{invidious}` was not found")
         exit(1)
@@ -157,8 +158,8 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
 
     print(f"[green]Writing new invidious data to {output}")
 
-    json.dump(data, open(f"{output}", "w"), indent=4)
-    read_file.close()
+    with open(output, "w") as out_file:
+        json.dump(data, out_file, indent=4)
 
 
 def cli_runner(
