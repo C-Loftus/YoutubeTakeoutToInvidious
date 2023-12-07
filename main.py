@@ -123,7 +123,6 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
         print(f"[red]Invidious json data titled `{invidious}` was not found")
         exit(1)
 
-    data = json.load(read_file)
     for f in files:
 
         if f == "subscriptions.csv" and include_subs:
@@ -133,8 +132,8 @@ def main(csv_dir: str, include_subs: bool, append_all: bool, out_dir: str, invid
             continue
 
         try:
-            df = pandas.read_csv(f, skiprows=2)["Video Id"]
-        except:
+            df = pandas.read_csv(f, skiprows=0)["Video ID"]
+        except IndexError:
             print(
                 f"[red]Error reading in csv playlist titled `{f}`. Skipping it")
 
